@@ -1,5 +1,6 @@
 const app = require('express')()
 const http = require('http').Server(app)
+const io = require('socket.io')(http)
 
 app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
@@ -12,6 +13,13 @@ app.use(function(req, res, next) {
 
 app.get('/', (req, res) => {
   res.json({ message: 'hello from express!' })
+})
+
+io.on('connection', socket => {
+  console.log('a user connected!')
+  socket.on('chat message', msg => {
+    console.log('message: ' + msg)
+  })
 })
 
 http.listen(3000, () => {

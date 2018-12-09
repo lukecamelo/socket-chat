@@ -1,4 +1,6 @@
 const button = document.querySelector('#button')
+const input = document.querySelector('#chat-input')
+const socket = io.connect('http://localhost:3000')
 
 const getMessage = () => {
   fetch('http://localhost:3000/', {
@@ -6,12 +8,13 @@ const getMessage = () => {
     headers: {
       'Content-Type': 'application/json'
     }
-    // mode: 'cors'
   })
     .then(res => res.json())
     .then(res => console.log(res))
 }
 
 button.addEventListener('click', () => {
-  getMessage()
+  socket.emit('chat message', input.value)
+  input.value = ''
+  return false
 })
