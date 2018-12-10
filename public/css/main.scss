@@ -9,3 +9,25 @@ body {
   align-items: center;
   color: palevioletred;
 }
+
+.button {
+  padding: 8px 12px;
+  background-color: palevioletred;
+  color: white;
+  margin: 1em;
+  border: none;
+  &:hover {
+    background-color: red;
+    cursor: pointer;
+  }
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+
+  input[type='text'] {
+    padding: 4px 12px;
+    margin: 0.5em 1em;
+  }
+}
