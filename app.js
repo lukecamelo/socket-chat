@@ -15,10 +15,29 @@ app.get('/', (req, res) => {
   res.json({ message: 'hello from express!' })
 })
 
-let user
+let user, clients
 
 io.on('connection', socket => {
   console.log('a user connected!')
+  console.log(Object.keys(io.sockets.sockets).length)
+  clients = Object.keys(io.sockets.sockets).length
+
+  io.sockets.emit('new_user', {
+    message: 'user connected!',
+    clients
+  })
+
+  socket.on('disconnect', () => {
+    console.log('a user has disconnected')
+    clients = Object.keys(io.sockets.sockets).length
+    console.log(Object.keys(io.sockets.sockets).length)
+
+    io.sockets.emit('disconnect', {
+      message: 'user disconnected!',
+      clients
+    })
+  })
+
   socket.on('chat message', data => {
     console.log('message: ' + data.message)
   })
@@ -37,7 +56,6 @@ io.on('connection', socket => {
   })
 
   socket.on('user_typing', data => {
-    console.log('typing socket ', data)
     io.sockets.emit('user_typing', {
       user,
       typing: data

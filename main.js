@@ -3,7 +3,7 @@ const input = document.querySelector('#chat-input')
 const usernameForm = document.querySelector('#username-form')
 const chatroom = document.querySelector('#chatroom')
 const messageContainer = document.querySelector('.message-container')
-const typingTag = document.querySelector('#typing')
+const typingContainer = document.querySelector('#typing')
 const socket = io.connect('http://localhost:3000')
 
 let username
@@ -39,7 +39,7 @@ usernameForm.addEventListener('submit', e => {
 
 /* v TYPING STUFF v */
 
-let typing, timeout
+let typing, timeout, userCount
 
 // returns typing variable to false shortly after user stops typing
 function timeoutFunction() {
@@ -58,10 +58,21 @@ input.addEventListener('keyup', () => {
 // Does what it says on the tin
 socket.on('user_typing', data => {
   if (data.typing) {
-    typingTag.innerHTML = `${data.user} is typing...`
+    let h2 = document.createElement('h2')
+    h2.classList.add('typing')
+    h2.innerHTML = `${data.user} is typing...`
+    typingContainer.appendChild(h2)
   } else {
-    typingTag.innerHTML = ''
+    typingContainer.removeChild(h2)
   }
+})
+
+socket.on('new_user', data => {
+  userCount = data.clients
+})
+
+socket.on('disconnect', data => {
+  userCount = data.clients
 })
 
 /* ^ TYPING STUFF ^ */
