@@ -21,7 +21,10 @@ io.on('connection', socket => {
     console.log('message: ' + data.message)
   })
   socket.on('chat message', data => {
-    io.sockets.emit('chat message', { message: data.message })
+    io.sockets.emit('chat message', {
+      message: data.message,
+      username: data.username
+    })
   })
 })
 
