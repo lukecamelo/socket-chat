@@ -10,12 +10,18 @@
   <body>
     <div class="container">
       <h1 class="header">Welcome to the chat baby</h1>
-      <div id="chatroom"></div>
-      <div class="input-container">
-        <input type="text" id="chat-input" />
-        <input type="text" id="username" />
+      <form id="username-form" class="form">
+        <h3>enter a user name!</h3>
+        <input type="text" id="username" name="username" />
+      </form>
+      <div id="chatroom" class="chatroom">
+        <h2 id="typing"></h2>
+        <div class="message-container"></div>
+        <div class="input-container">
+          <input type="text" id="chat-input" />
+          <button class="send-btn button" id="button">send</button>
+        </div>
       </div>
-      <button id="button" class="button">click me</button>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
     <script src="main.js"></script>

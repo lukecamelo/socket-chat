@@ -1,20 +1,14 @@
 const button = document.querySelector('#button')
 const input = document.querySelector('#chat-input')
-const username = document.querySelector('#username')
+const usernameForm = document.querySelector('#username-form')
 const chatroom = document.querySelector('#chatroom')
+const messageContainer = document.querySelector('.message-container')
+const typingTag = document.querySelector('#typing')
 const socket = io.connect('http://localhost:3000')
 
-const getMessage = () => {
-  fetch('http://localhost:3000/', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-    .then(res => res.json())
-    .then(res => console.log(res))
-}
+let username
 
+// Will soon be removed to make way for a proper input form
 button.addEventListener('click', () => {
   socket.emit('chat message', {
     message: input.value,
@@ -24,9 +18,50 @@ button.addEventListener('click', () => {
   return false
 })
 
+// Builds a p tag containg the message data
 socket.on('chat message', data => {
   console.log(data)
   let p = document.createElement('p')
-  p.innerHTML = `<p class='message'>${data.username}: ${data.message}</p>`
-  chatroom.appendChild(p)
+  p.classList.add('message')
+  p.innerHTML = `${data.username}: ${data.message}`
+  messageContainer.appendChild(p)
 })
+
+// Temporary measure to have loosie goosie usernames
+usernameForm.addEventListener('submit', e => {
+  e.preventDefault()
+  username = [...usernameForm.getElementsByTagName('input')][0].value
+  console.log(username)
+  socket.emit('username change', {
+    username
+  })
+})
+
+/* v TYPING STUFF v */
+
+let typing, timeout
+
+// returns typing variable to false shortly after user stops typing
+function timeoutFunction() {
+  typing = false
+  socket.emit('user_typing', false)
+}
+
+// sets typing to true while user is typing, and 2 seconds after (configurable)
+input.addEventListener('keyup', () => {
+  typing = true
+  socket.emit('user_typing', true)
+  clearTimeout(timeout)
+  timeout = setTimeout(timeoutFunction, 2000)
+})
+
+// Does what it says on the tin
+socket.on('user_typing', data => {
+  if (data.typing) {
+    typingTag.innerHTML = `${data.user} is typing...`
+  } else {
+    typingTag.innerHTML = ''
+  }
+})
+
+/* ^ TYPING STUFF ^ */
