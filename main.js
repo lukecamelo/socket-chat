@@ -50,20 +50,23 @@ function timeoutFunction() {
 // sets typing to true while user is typing, and 2 seconds after (configurable)
 input.addEventListener('keyup', () => {
   typing = true
-  socket.emit('user_typing', true)
+  // tell the server that typing is happening and also which user is doing the typing
+  socket.emit('user_typing', {
+    typing,
+    user: username
+  })
   clearTimeout(timeout)
-  timeout = setTimeout(timeoutFunction, 2000)
+  timeout = setTimeout(timeoutFunction, 10000)
 })
 
 // Does what it says on the tin
 socket.on('user_typing', data => {
+  // when the server pings back after being told someone is typing, set the typing dialogue accordingly
+  // TODO: make it so that when multiple users are typing, display all of their names in the dialogue
   if (data.typing) {
-    let h2 = document.createElement('h2')
-    h2.classList.add('typing')
-    h2.innerHTML = `${data.user} is typing...`
-    typingContainer.appendChild(h2)
+    typingContainer.firstChild.innerHTML = `${data.user} is typing...`
   } else {
-    typingContainer.removeChild(h2)
+    typingContainer.firstChild.innerHTML = ''
   }
 })
 

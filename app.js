@@ -15,16 +15,18 @@ app.get('/', (req, res) => {
   res.json({ message: 'hello from express!' })
 })
 
-let user, clients
+let user,
+  clients = []
 
 io.on('connection', socket => {
   console.log('a user connected!')
   console.log(Object.keys(io.sockets.sockets).length)
-  clients = Object.keys(io.sockets.sockets).length
+  // clients = Object.keys(io.sockets.sockets).length
 
   io.sockets.emit('new_user', {
     message: 'user connected!',
-    clients
+    clients,
+    user
   })
 
   socket.on('disconnect', () => {
@@ -51,14 +53,15 @@ io.on('connection', socket => {
 
   socket.on('username change', data => {
     console.log('username change data: ', data)
-    user = data.username
-    console.log(user)
+    clients.push(data.username)
+    console.log(clients)
   })
 
   socket.on('user_typing', data => {
+    // when it receives the typing data, send it back (necessary ???)
     io.sockets.emit('user_typing', {
-      user,
-      typing: data
+      user: data.user,
+      typing: data.typing
     })
   })
 })
