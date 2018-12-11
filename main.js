@@ -39,7 +39,10 @@ usernameForm.addEventListener('submit', e => {
 
 /* v TYPING STUFF v */
 
-let typing, timeout, userCount
+let typing,
+  timeout,
+  userCount,
+  connectedUsers = []
 
 // returns typing variable to false shortly after user stops typing
 function timeoutFunction() {
@@ -60,11 +63,15 @@ input.addEventListener('keyup', () => {
 })
 
 // Does what it says on the tin
-socket.on('user_typing', data => {
+let typingUsers = []
+socket.on('user_typing', ({ typing, user }) => {
   // when the server pings back after being told someone is typing, set the typing dialogue accordingly
-  // TODO: make it so that when multiple users are typing, display all of their names in the dialogue
-  if (data.typing) {
-    typingContainer.firstChild.innerHTML = `${data.user} is typing...`
+  if (!typingUsers.includes(user)) {
+    typingUsers.push(user)
+  }
+  console.log(typingUsers)
+  if (typing) {
+    typingContainer.firstChild.innerHTML = `${typingUsers} is typing...`
   } else {
     typingContainer.firstChild.innerHTML = ''
   }
@@ -76,6 +83,10 @@ socket.on('new_user', data => {
 
 socket.on('disconnect', data => {
   userCount = data.clients
+})
+
+socket.on('add_user', data => {
+  connectedUsers = data.connectedUsers
 })
 
 /* ^ TYPING STUFF ^ */

@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
 })
 
 let user,
-  clients = []
+  connectedUsers = []
 
 io.on('connection', socket => {
   console.log('a user connected!')
@@ -25,7 +25,7 @@ io.on('connection', socket => {
 
   io.sockets.emit('new_user', {
     message: 'user connected!',
-    clients,
+    clients: connectedUsers,
     user
   })
 
@@ -36,7 +36,7 @@ io.on('connection', socket => {
 
     io.sockets.emit('disconnect', {
       message: 'user disconnected!',
-      clients
+      clients: connectedUsers
     })
   })
 
@@ -52,9 +52,12 @@ io.on('connection', socket => {
   })
 
   socket.on('username change', data => {
-    console.log('username change data: ', data)
-    clients.push(data.username)
-    console.log(clients)
+    connectedUsers.push(data.username)
+    console.log('connected: ', connectedUsers)
+
+    io.sockets.emit('add_user', {
+      connectedUsers
+    })
   })
 
   socket.on('user_typing', data => {
