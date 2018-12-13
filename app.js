@@ -25,8 +25,7 @@ io.on('connection', socket => {
 
   io.sockets.emit('new_user', {
     message: 'user connected!',
-    clients: connectedUsers,
-    user
+    clients: connectedUsers
   })
 
   socket.on('disconnect', () => {
@@ -54,6 +53,7 @@ io.on('connection', socket => {
   socket.on('username change', data => {
     connectedUsers.push(data.username)
     console.log('connected: ', connectedUsers)
+    user = data.username
 
     io.sockets.emit('add_user', {
       connectedUsers

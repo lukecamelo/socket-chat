@@ -12,7 +12,7 @@ let username
 button.addEventListener('click', () => {
   socket.emit('chat message', {
     message: input.value,
-    username: username.value
+    username: username
   })
   input.value = ''
   return false
