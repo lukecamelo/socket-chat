@@ -21,10 +21,14 @@
 
         <div class="message-container"></div>
 
-        <div class="input-container">
-          <input type="text" id="chat-input" />
-          <button class="send-btn button" id="button">send</button>
-        </div>
+        <form id="chat-form">
+          <div class="input-container">
+            <input type="text" id="chat-input" />
+            <button class="send-btn button" id="button" type="submit">
+              send
+            </button>
+          </div>
+        </form>
       </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
