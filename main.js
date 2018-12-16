@@ -9,16 +9,6 @@ const socket = io.connect('http://localhost:3000')
 
 let username
 
-// Will soon be removed to make way for a proper input form
-// button.addEventListener('click', () => {
-//   socket.emit('chat message', {
-//     message: input.value,
-//     username: username
-//   })
-//   input.value = ''
-//   return false
-// })
-
 // Builds a p tag containg the message data
 socket.on('chat message', data => {
   console.log(data)
